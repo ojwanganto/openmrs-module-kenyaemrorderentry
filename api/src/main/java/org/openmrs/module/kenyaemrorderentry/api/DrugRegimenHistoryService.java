@@ -15,6 +15,7 @@ package org.openmrs.module.kenyaemrorderentry.api;
 
 import org.openmrs.Patient;
 import org.openmrs.api.OpenmrsService;
+import org.openmrs.module.kenyaemrorderentry.api.db.DrugRegimenHistoryDAO;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -29,9 +30,10 @@ import java.util.List;
  *
  * @see org.openmrs.api.context.Context
  */
-@Transactional
+
 public interface DrugRegimenHistoryService extends OpenmrsService {
 
+    public void setDrugRegimenHistoryDAO(DrugRegimenHistoryDAO drugRegimenHistoryDAO);
     public List<DrugRegimenHistory> getPatientCurrentRegimenByPatient(Patient patient);
     public DrugRegimenHistory saveDrugRegimenHistory(DrugRegimenHistory drugRegimenHistory);
 

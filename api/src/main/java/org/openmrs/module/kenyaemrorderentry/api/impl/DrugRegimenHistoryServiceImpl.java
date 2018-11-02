@@ -19,21 +19,27 @@ import org.openmrs.Patient;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.kenyaemrorderentry.api.DrugRegimenHistory;
 import org.openmrs.module.kenyaemrorderentry.api.DrugRegimenHistoryService;
+import org.openmrs.module.kenyaemrorderentry.api.db.DrugRegimenHistoryDAO;
 import org.openmrs.module.kenyaemrorderentry.api.db.hibernate.HibernateDrugRegimenHistoryDAO;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 /**
  * It is a default implementation of {@link DrugRegimenHistoryService}.
  */
 
-
+@Transactional
 public class DrugRegimenHistoryServiceImpl extends BaseOpenmrsService implements DrugRegimenHistoryService {
 
     protected final Log log = LogFactory.getLog(this.getClass());
 
-    private HibernateDrugRegimenHistoryDAO drugRegimenHistoryDAO;
+    private DrugRegimenHistoryDAO drugRegimenHistoryDAO;
 
 
+
+    public void setDrugRegimenHistoryDAO(DrugRegimenHistoryDAO drugRegimenHistoryDAO) {
+        this.drugRegimenHistoryDAO = drugRegimenHistoryDAO;
+    }
 
     @Override
     public List<DrugRegimenHistory> getPatientCurrentRegimenByPatient(Patient patient) {
@@ -43,10 +49,5 @@ public class DrugRegimenHistoryServiceImpl extends BaseOpenmrsService implements
     public DrugRegimenHistory saveDrugRegimenHistory(DrugRegimenHistory drugRegimenHistory) {
         return drugRegimenHistoryDAO.saveDrugRegimenHistory(drugRegimenHistory);
     }
-
-    public void setDrugRegimenHistoryDAO(HibernateDrugRegimenHistoryDAO patientCurrentRegimenDAO) {
-        this.drugRegimenHistoryDAO = patientCurrentRegimenDAO;
-    }
-
 
 }
