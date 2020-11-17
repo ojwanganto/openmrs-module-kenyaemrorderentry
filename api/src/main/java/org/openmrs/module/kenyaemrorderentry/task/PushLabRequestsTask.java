@@ -55,7 +55,7 @@ public class PushLabRequestsTask extends AbstractTask {
             Integer gpLastOrderId = StringUtils.isNotBlank(lastOrderIdStr) ? Integer.parseInt(lastOrderIdStr) : 0;
 
             LabOrderDataExchange e = new LabOrderDataExchange();
-            ObjectNode samplesWrapper = e.getLabRequests(null, null);
+            ObjectNode samplesWrapper = e.getLabRequests(gpLastOrderId, lastId);
             ArrayNode samples = (ArrayNode) samplesWrapper.get("samples");
 
             if (samples.size() < 1) {
