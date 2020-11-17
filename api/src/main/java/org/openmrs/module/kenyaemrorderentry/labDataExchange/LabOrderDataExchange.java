@@ -20,6 +20,7 @@ import org.openmrs.api.ObsService;
 import org.openmrs.api.OrderService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemrorderentry.util.Utils;
+import org.openmrs.ui.framework.SimpleObject;
 
 import java.util.Date;
 import java.util.HashSet;
@@ -92,6 +93,13 @@ public class LabOrderDataExchange {
         PatientIdentifier cccNumber = patient.getPatientIdentifier(Utils.getUniquePatientNumberIdentifierType());
         Encounter originalRegimenEncounter = Utils.getFirstEncounterForProgram(patient, "ARV");
         Encounter currentRegimenEncounter = Utils.getLastEncounterForProgram(patient, "ARV");
+        SimpleObject regimenDetails = Utils.buildRegimenChangeObject(currentRegimenEncounter.getObs(), currentRegimenEncounter);
+        String regimenName = (String) regimenDetails.get("regimenShortDisplay");
+        String nascopCode = "";
+        if (StringUtils.isNotBlank(regimenName )) {
+            nascopCode = Utils.getDrugNascopCodeByDrugNameAndRegimenLine(regimenName, "AF");
+        }
+
 
         ObjectNode test = Utils.getJsonNodeFactory().objectNode();
 
@@ -105,11 +113,12 @@ public class LabOrderDataExchange {
         test.put("datecollected", Utils.getSimpleDateFormat("yyyy-MM-dd").format(o.getDateActivated()));
         test.put("order_no", o.getOrderId().toString());
         test.put("lab", "");
-        //test.put("justification", o.getOrderReason() != null ? getOrderReasonCode(o.getOrderReason().getUuid()) : "");
-        test.put("justification", "1");
-        test.put("prophylaxis", "AF2Aa");
-        test.put("pmtct", "3");
-        test.put("recency_number", "");
+        test.put("justification", o.getOrderReason() != null ? getOrderReasonCode(o.getOrderReason().getUuid()) : "");
+        //test.put("justification", "1");
+        test.put("prophylaxis", nascopCode);
+        if (patient.getGender().equals("F")) {
+            test.put("pmtct", "3");
+        }
         test.put("initiation_date", originalRegimenEncounter != null ? Utils.getSimpleDateFormat("yyyy-MM-dd").format(originalRegimenEncounter.getEncounterDatetime()) : "");
         test.put("dateinitiatedonregimen", currentRegimenEncounter != null ? Utils.getSimpleDateFormat("yyyy-MM-dd").format(currentRegimenEncounter.getEncounterDatetime()) : "");
         labTests.add(test);
